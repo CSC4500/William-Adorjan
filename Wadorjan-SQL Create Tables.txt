@@ -1,0 +1,81 @@
+CREATE TABLE `TEAM` (
+	teamID INT AUTO_INCREMENT,
+    teamCity VARCHAR(25) NOT NULL,
+    teamState VARCHAR(25) NOT NULL,
+    teamCountry VARCHAR(25) NOT NULL,
+    teamName VARCHAR(25) NOT NULL,
+    teamDivision VARCHAR(25) NOT NULL,
+    teamLeague VARCHAR(25) NOT NULL,
+    CONSTRAINT TEAM_PK PRIMARY KEY (teamID)
+	);
+
+CREATE TABLE `Schedule` (
+	gameID INT AUTO_INCREMENT,
+    teamID INT NOT NULL,
+    gameDate DATE NOT NULL,
+    gameOpp VARCHAR(25) NOT NULL,
+    gameHomeAway VARCHAR(25) NOT NULL,
+    CONSTRAINT Schedule_PK PRIMARY KEY (gameID),
+    CONSTRAINT Schedule_Team_FK FOREIGN KEY (teamID)
+    REFERENCES Team (teamID)
+	);
+
+CREATE TABLE `Player` (
+	playID INT AUTO_INCREMENT,
+    teamID INT NOT NULL,
+    playFName VARCHAR(25) NOT NULL,
+    playLName VARCHAR(25) NOT NULL,
+    playDOB DATE NOT NULL,
+    playNationality VARCHAR(25) NOT NULL,
+    playPosition VARCHAR(3) NOT NULL,
+    playHand VARCHAR(5) NOT NULL,
+    CONSTRAINT Player_PK PRIMARY KEY (playID),
+    CONSTRAINT Player_Team_FK FOREIGN KEY (teamID)
+    REFERENCES Team (teamID)
+	);
+
+CREATE TABLE `Contract` (
+	contractID INT AUTO_INCREMENT,
+    playID INT NOT NULL,
+    conYears INT NOT NULL,
+    conTotal INT NOT NULL,
+    conYearlyPay INT NOT NULL,
+    CONSTRAINT Contract_PK PRIMARY KEY (contractID),
+    CONSTRAINT Contract_Player_FK FOREIGN KEY (playID)
+    REFERENCES Player (playID)
+	);
+
+CREATE TABLE `Injury` (
+	 injID INT AUTO_INCREMENT,
+    playID INT NOT NULL,
+    injRegion VARCHAR(20) NOT NULL,
+    injName VARCHAR(30) NOT NULL,
+    injExpectedOut VARCHAR(15) NOT NULL,
+    CONSTRAINT Injury_PK PRIMARY KEY (injID),
+    CONSTRAINT Injury_Player_FK FOREIGN KEY (playID)
+    REFERENCES Player (playID)
+	);
+
+CREATE TABLE `StartingLineup` (
+	startingLineupID INT AUTO_INCREMENT,
+    playID INT NOT NULL,
+    gameID INT NOT NULL,
+    slPosition VARCHAR(3) NOT NULL,
+    CONSTRAINT Starting_Lineup_PK PRIMARY KEY (startingLineupID),
+    CONSTRAINT StartingLineup_Player_FK FOREIGN KEY (playID)
+    REFERENCES Player (playID),
+    CONSTRAINT StartingLineup_Game_FK FOREIGN KEY (gameID)
+    REFERENCES `Schedule` (gameID)
+	);
+
+CREATE TABLE `BattingOrder` (
+	battingOrderID INT AUTO_INCREMENT,
+    playID INT NOT NULL,
+    gameID INT NOT NULL,
+    boNumberInOrder INT NOT NULL,
+    CONSTRAINT BattingOrder_PK PRIMARY KEY (battingOrderID),
+    CONSTRAINT BattingOrder_Player_FK FOREIGN KEY (playID)
+    REFERENCES Player (playID),
+    CONSTRAINT BattingOrder_Game_FK FOREIGN KEY (gameID)
+    REFERENCES `Schedule` (gameID)
+	);
